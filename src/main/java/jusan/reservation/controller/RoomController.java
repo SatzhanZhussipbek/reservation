@@ -1,9 +1,12 @@
 package jusan.reservation.controller;
 
 import jusan.reservation.entity.Client;
+import jusan.reservation.entity.ReserveItem;
 import jusan.reservation.exception.ErrorTemplate;
+import jusan.reservation.exception.RoomBookedException;
 import jusan.reservation.model.ClientDAO;
 import jusan.reservation.repository.ClientRepository;
+import jusan.reservation.repository.ReserveItemRepository;
 import jusan.reservation.service.ClientService;
 import jusan.reservation.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,9 @@ public class RoomController {
     @Autowired
     ClientService clientService;
 
+    @Autowired
+    ReserveItemRepository reserveItemRepository;
+
     @GetMapping("/rooms")
     public ResponseEntity<Object> getRooms(@RequestBody ClientDAO clientDAO, Authentication authentication) {
         Client searchPerson = clientRepository.findClientById(clientDAO.getId());
@@ -43,6 +49,16 @@ public class RoomController {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
         }
         return ResponseEntity.ok(roomService.getRoom(roomId));
+    }
+
+    @PostMapping("/reservation/add")
+    public ResponseEntity<Object> addReservation(@RequestParam long userId, @RequestBody ReserveItem reserveItem) {
+        if (reserveItemRepository.existsById(reserveItem.getReservationId())) {
+            if (reserveItemRepository.getReserveItemByReservationIdAndUserId(reserveItem.getReservationId(), userId).getPeriod()==reserveItem.getPeriod()) {
+                throw new RoomBookedException("The room is already booked during this time period.");
+            }
+        }
+        return ResponseEntity.ok(clientService.createReservation(reserveItem));
     }
 
     @DeleteMapping("/reservation/delete")

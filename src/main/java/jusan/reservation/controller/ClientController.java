@@ -59,7 +59,7 @@ public class ClientController {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
         }
         if (person1.getRole().equals(Role.USER)) {
-            throw new AccessDeniedException("Access denied. Only admins can create rooms.");
+            throw new AccessDeniedException("Access denied. Only admins can erase rooms.");
         }
         return ResponseEntity.ok(clientService.deleteRoom(userId, room));
     }

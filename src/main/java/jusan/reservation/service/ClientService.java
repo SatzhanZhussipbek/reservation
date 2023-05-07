@@ -61,6 +61,13 @@ public class ClientService {
         throw new ReservationsNotFoundException(userId);
     }
 
+    public ReserveItem createReservation(ReserveItem item) {
+        ReserveItem newReservation = new ReserveItem(item.getReservationId(), item.getPeriod(), item.getUserId(),
+                item.getDescription(), item.getRoom());
+        reserveItemRepository.save(newReservation);
+        return newReservation;
+    }
+
     public void deleteReservation(long reservationId, long userId) {
         ReserveItem item = reserveItemRepository.getReserveItemByReservationIdAndUserId(reservationId, userId);
         reserveItemRepository.delete(item);

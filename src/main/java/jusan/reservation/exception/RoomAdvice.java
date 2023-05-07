@@ -23,5 +23,11 @@ public class RoomAdvice {
         return ex.getMessage();
     }
 
+    @ResponseBody
+    @ExceptionHandler(RoomBookedException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    String roomBooked(RoomBookedException ex) {
+        return ex.getMessage();
+    }
 
 }
