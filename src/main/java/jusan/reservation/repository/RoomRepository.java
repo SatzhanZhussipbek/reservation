@@ -2,6 +2,7 @@ package jusan.reservation.repository;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import jusan.reservation.entity.Room;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RoomRepository extends CrudRepository<Room, Long> {
+public interface RoomRepository extends JpaRepository<Room, Long> {
     /*@Transactional
     @Modifying
     @Query(value = "update Room r set r.status=?1 where i.id=?2")
@@ -24,4 +25,11 @@ public interface RoomRepository extends CrudRepository<Room, Long> {
     @Query(value = "select r from Room r where r.id=?1")
     Room getRoomById(Long id);
 
+
+    /*List<Room> findAllById(Sort id);
+
+
+    List<Room> findAllByFloor(Sort floor);
+
+    List<Room> findAllByCapacity(Sort capacity);*/
 }

@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers("/v3/api-docs/**",
                         "/swagger-ui/**", "/swagger-ui.html",
-                        "/signup", "/authenticate",
+                        "/signup", "/signin",
                         "/h2-console/**", "/h2-console/").permitAll()// разрешить доступ всем
                 .anyRequest().authenticated() // любой запрос требует авторизации
                 .and()

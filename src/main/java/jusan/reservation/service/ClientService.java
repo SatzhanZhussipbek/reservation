@@ -7,11 +7,14 @@ import jusan.reservation.exception.ErrorTemplate;
 import jusan.reservation.exception.ReservationsNotFoundException;
 import jusan.reservation.model.JwtResponse;
 import jusan.reservation.model.Role;
+import jusan.reservation.model.RoomDTO;
 import jusan.reservation.repository.ClientRepository;
 import jusan.reservation.repository.ReserveItemRepository;
 import jusan.reservation.repository.RoomRepository;
 import jusan.reservation.security.ClientDetails;
 import jusan.reservation.security.JwtService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +26,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URL;
+import java.util.Base64;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ClientService {
 
     private ClientRepository clientRepository;
@@ -63,7 +71,7 @@ public class ClientService {
 
     public ReserveItem createReservation(ReserveItem item) {
         ReserveItem newReservation = new ReserveItem(item.getReservationId(), item.getPeriod(), item.getUserId(),
-                item.getDescription(), item.getRoom());
+                item.getDescription());
         reserveItemRepository.save(newReservation);
         return newReservation;
     }
@@ -73,9 +81,11 @@ public class ClientService {
         reserveItemRepository.delete(item);
     }
 
-    public Room createRoom(Room room) {
-        Room newRoom = new Room(room.getId(), room.getDescription(), room.getPhotos(), room.getType(),
-                room.getCapacity(), room.getFloor(), room.getReservationList());
+    public Room createRoom(RoomDTO roomDTO) throws IOException {
+        byte[] fileContent = FileUtils.readFileToByteArray(new File(roomDTO.getPhoto()));
+        //String encodedString = Base64.getEncoder().encodeToString(fileContent);
+        Room newRoom = new Room(roomDTO.getId(), roomDTO.getDescription(), fileContent, roomDTO.getType(),
+                roomDTO.getCapacity(), roomDTO.getFloor(), roomDTO.getReservationList());
         roomRepository.save(newRoom);
         return newRoom;
     }
@@ -86,16 +96,16 @@ public class ClientService {
     }
 
     public ResponseEntity<Object> register(String name, String surname, String email, String password) {
-        if (clientRepository.findClientByName(email) != null) {
+        if (clientRepository.findClientByEmail(email) != null) {
             System.out.println("There is already a user with such a name.");
         }
         Client user = new Client();
         user.setName(name); user.setSurname(surname);
         user.setEmail(email); user.setPassword(passwordEncoder.encode(password));
-        if (clientRepository.findClientById(1) == null) {
+        if (clientRepository.findClientByRole(Role.ADMIN) == null) {
             user.setRole(Role.ADMIN);
         }
-        else {
+        if (clientRepository.findClientByRole(Role.ADMIN) != null) {
             user.setRole(Role.USER);
         }
         clientRepository.save(user);
@@ -112,12 +122,32 @@ public class ClientService {
         } catch (BadCredentialsException e) {
             throw new Exception(e.getMessage()+" "+e.getLocalizedMessage());
         }
-        Client user = clientRepository.findClientByName(email1);
+        Client user = clientRepository.findClientByEmail(email1);
         if (user == null) {
             throw new UsernameNotFoundException(email1);
         }
         ClientDetails clientDetails = new ClientDetails(user);
         String jwtToken = jwtService.generateToken(clientDetails);
         return new JwtResponse(jwtToken);
+    }
+
+    public static byte[] convertImageByte(String string) throws IOException {
+        URL url = new URL(string);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        InputStream is = null;
+        try {
+            is = new BufferedInputStream(url.openStream());
+            byte[] byteChunk = new byte[4096];
+            int n;
+            while ( (n = is.read(byteChunk)) > 0 ) {
+                baos.write(byteChunk, 0, n);
+            }
+            return baos.toByteArray();
+        }
+        catch (IOException e) {e.printStackTrace ();}
+        finally {
+            if (is != null) { is.close(); }
+        }
+        return null;
     }
 }

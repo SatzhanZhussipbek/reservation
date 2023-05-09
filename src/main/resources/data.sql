@@ -13,7 +13,7 @@ CREATE TABLE if not exists Rooms
 (
     id NVARCHAR(80) NOT NULL,
     description NVARCHAR(80) NOT NULL,
-    photos BLOB NOT NULL,
+    photo BLOB NOT NULL,
     type NVARCHAR(80) NOT NULL,
     capacity LONG NOT NULL,
     floor LONG NOT NULL,

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
 
 @Embeddable
 @Data
@@ -13,7 +15,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class TimeFrame {
 
-    private long id;
+
+    private String id = UUID.randomUUID().toString();
 
     private Date startTime;
 

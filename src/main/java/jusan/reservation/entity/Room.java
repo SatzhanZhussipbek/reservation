@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class Room {
 
     @Column(name = "photos")
     @Lob
-    private byte[] photos = new byte[10];
+    private byte[] photo;
 
     @Column(name = "type")
     private String type;
@@ -35,7 +36,7 @@ public class Room {
     private long floor;
 
     @Column(name = "photos")
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "room")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReserveItem> reservationList;
 
 
