@@ -1,5 +1,4 @@
 package jusan.reservation.controller;
-
 import jusan.reservation.entity.Client;
 import jusan.reservation.entity.Room;
 import jusan.reservation.model.JwtRequest;
@@ -7,7 +6,9 @@ import jusan.reservation.model.Role;
 import jusan.reservation.model.RoomDTO;
 import jusan.reservation.model.SignInRequest;
 import jusan.reservation.repository.ClientRepository;
+import jusan.reservation.repository.RoomRepository;
 import jusan.reservation.service.ClientService;
+import jusan.reservation.service.ImageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,20 +16,23 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 @RestController
 @Slf4j
 public class ClientController {
+    private ClientService clientService;
+    private ClientRepository clientRepository;
+    private ImageService imageService;
+    private RoomRepository roomRepository;
     @Autowired
-    ClientService clientService;
-
-    @Autowired
-    ClientRepository clientRepository;
+    public ClientController(ClientService clientService, ClientRepository clientRepository, ImageService imageService,
+                            RoomRepository roomRepository) {
+        this.clientService = clientService;
+        this.clientRepository = clientRepository;
+        this.imageService = imageService;
+        this.roomRepository = roomRepository;
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateData (@RequestBody SignInRequest signInRequest) throws Exception {
@@ -47,8 +51,25 @@ public class ClientController {
         return ResponseEntity.ok(clientService.getReservations(userId));
     }
 
+    @GetMapping("/image/url/")
+    public ResponseEntity<?> getImageURL(@RequestParam String photoName, @RequestParam long roomId) {
+        return imageService.getUploadUrl(photoName, roomId);
+    }
+
+    @GetMapping("/image/get/")
+    public ResponseEntity<?> getImageByPath(@RequestParam String path) {
+        return imageService.getPhoto(path);
+    }
+
+    @PostMapping(path = "/image/upload/", consumes = {"*/*"})
+    public ResponseEntity<?> uploadImage(@RequestParam String href, @RequestParam String method,
+                                         @RequestBody byte[] image) throws IOException {
+        //log.error(imageService.uploadPhoto(href, photoName, method, image).toString());
+        return imageService.uploadPhoto(href, method, image);
+    }
     @PostMapping("/rooms/add")
-    public ResponseEntity<?> createRoom(@RequestBody RoomDTO roomDTO, Authentication authentication) throws IOException {
+    public ResponseEntity<?> createRoom(@RequestBody RoomDTO roomDTO,
+                                        Authentication authentication) throws IOException {
         Client person = clientRepository.findClientById(roomDTO.getReservationList().get(0).getUserId());
         if ( !authentication.getPrincipal().equals(person.getEmail()) ||
                 !authentication.getCredentials().equals(person.getPassword()) )  {

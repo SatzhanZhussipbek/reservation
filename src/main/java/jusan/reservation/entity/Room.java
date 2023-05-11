@@ -22,9 +22,8 @@ public class Room {
     @Column(name="description")
     private String description;
 
-    @Column(name = "photos")
-    @Lob
-    private byte[] photo;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<PhotoItem> photos;
 
     @Column(name = "type")
     private String type;
@@ -35,7 +34,6 @@ public class Room {
     @Column(name = "floor")
     private long floor;
 
-    @Column(name = "photos")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReserveItem> reservationList;
 

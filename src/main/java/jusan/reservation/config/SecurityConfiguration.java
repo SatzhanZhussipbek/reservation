@@ -48,16 +48,30 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers("/v3/api-docs/**",
                         "/swagger-ui/**", "/swagger-ui.html",
-                        "/signup", "/signin",
+                        "/signup", "/signin", "/image/upload**", "/image/url**", "/image/path**",
                         "/h2-console/**", "/h2-console/").permitAll()// разрешить доступ всем
                 .anyRequest().authenticated() // любой запрос требует авторизации
                 .and()
                 .authenticationProvider(authProvider)
                 .addFilterBefore(jwtAuthenticationFilterFilter, UsernamePasswordAuthenticationFilter.class);
         http.headers().frameOptions().sameOrigin();
+        http.headers().httpStrictTransportSecurity().disable();
         return http.build();
     }
+    @Bean
+    SecurityFilterChain web(HttpSecurity http) throws Exception {
+        http
+                // ...
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/resources/**", "/signup", "/signin", "/image/upload/**", "/image/url/**", "/image/path/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        //.requestMatchers("/db/**").access(new WebExpressionAuthorizationManager("hasRole('ADMIN') and hasRole('DBA')"))
+                        // .requestMatchers("/db/**").access(AuthorizationManagers.allOf(AuthorityAuthorizationManager.hasRole("ADMIN"), AuthorityAuthorizationManager.hasRole("DBA")))
+                        .anyRequest().denyAll()
+                );
 
+        return http.build();
+    }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));

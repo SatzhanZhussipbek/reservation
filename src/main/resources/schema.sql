@@ -1,3 +1,4 @@
+
 CREATE TABLE if not exists Clients
 (
     id IDENTITY,
@@ -11,13 +12,21 @@ CREATE TABLE if not exists Clients
 
 CREATE TABLE if not exists Rooms
 (
-    id NVARCHAR(80) NOT NULL,
-    description NVARCHAR(80) NOT NULL,
-    photo BLOB NOT NULL,
-    type NVARCHAR(80) NOT NULL,
-    capacity LONG NOT NULL,
-    floor LONG NOT NULL,
+    id NVARCHAR(80),
+    description NVARCHAR(80),
+    type NVARCHAR(80),
+    capacity LONG,
+    floor LONG,
     PRIMARY KEY(id)
+);
+
+CREATE TABLE if not exists Photo_items
+(
+    id IDENTITY,
+    room_id LONG,
+    name NVARCHAR(256),
+    PRIMARY KEY(id),
+    FOREIGN KEY(room_id) references Rooms(id)
 );
 
 CREATE TABLE if not exists Reserve_item

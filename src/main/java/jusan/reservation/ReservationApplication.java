@@ -20,12 +20,7 @@ import java.util.Date;
 public class ReservationApplication {
 
     public static void main(String[] args) throws IOException {
-        RoomDTO room = new RoomDTO();
-        room.setPhoto("/home/satzhan.zhussipbek/IdeaProjects/reservation/src/main/resources/mountain.jpg");
         SpringApplication.run(ReservationApplication.class, args);
-        byte[] fileContent = FileUtils.readFileToByteArray(new File(room.getPhoto()));
-        String encodedString = Base64.getEncoder().encodeToString(fileContent);
-        System.out.println(encodedString);
     }
 
 }

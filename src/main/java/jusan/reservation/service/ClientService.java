@@ -82,9 +82,7 @@ public class ClientService {
     }
 
     public Room createRoom(RoomDTO roomDTO) throws IOException {
-        byte[] fileContent = FileUtils.readFileToByteArray(new File(roomDTO.getPhoto()));
-        //String encodedString = Base64.getEncoder().encodeToString(fileContent);
-        Room newRoom = new Room(roomDTO.getId(), roomDTO.getDescription(), fileContent, roomDTO.getType(),
+        Room newRoom = new Room(roomDTO.getId(), roomDTO.getDescription(), roomDTO.getPhotos(), roomDTO.getType(),
                 roomDTO.getCapacity(), roomDTO.getFloor(), roomDTO.getReservationList());
         roomRepository.save(newRoom);
         return newRoom;

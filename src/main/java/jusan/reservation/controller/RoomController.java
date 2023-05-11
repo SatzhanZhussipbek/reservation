@@ -91,6 +91,16 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getRoom(roomId));
     }
 
+    @GetMapping("/room//images/{roomId}")
+    public ResponseEntity<Object> getImagesForRoom(@PathVariable long roomId, @RequestBody ClientDAO clientDAO, Authentication authentication) {
+        Client searchPerson = clientRepository.findClientById(clientDAO.getId());
+        if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
+                !authentication.getCredentials().equals(searchPerson.getPassword()) )  {
+            throw new AccessDeniedException("Access denied. You entered the wrong id.");
+        }
+        return ResponseEntity.ok(roomService.getListOfImagesByRoomId(roomId));
+    }
+
     @PostMapping("/reservation/add")
     public ResponseEntity<Object> addReservation(@RequestParam long roomId, @RequestBody ReserveItem reserveItem) {
         if (reserveItemRepository.existsById(reserveItem.getReservationId())) {

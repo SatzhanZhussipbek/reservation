@@ -1,5 +1,6 @@
 package jusan.reservation.service;
 
+import jusan.reservation.entity.PhotoItem;
 import jusan.reservation.entity.Room;
 import jusan.reservation.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,10 @@ public class RoomService {
     public Room getRoom(long roomId) {
         Room room = roomRepository.getRoomById(roomId);
         return room;
+    }
+
+    public List<PhotoItem> getListOfImagesByRoomId(long roomId) {
+        Room searchRoom = roomRepository.getRoomById(roomId);
+        return searchRoom.getPhotos();
     }
 }

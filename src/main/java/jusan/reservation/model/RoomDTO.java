@@ -1,6 +1,7 @@
 package jusan.reservation.model;
 
 import jakarta.persistence.*;
+import jusan.reservation.entity.PhotoItem;
 import jusan.reservation.entity.ReserveItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class RoomDTO {
 
         private String description;
 
-        private String photo;
+        private List<PhotoItem> photos;
 
         private String type;
 
