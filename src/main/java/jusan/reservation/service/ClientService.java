@@ -132,7 +132,7 @@ public class ClientService {
         }
         ClientDetails clientDetails = new ClientDetails(user);
         String jwtToken = jwtService.generateToken(clientDetails);
-        return new JwtResponse(jwtToken);
+        return new JwtResponse(user.getId(), user.getRole(), jwtToken);
     }
 
 }

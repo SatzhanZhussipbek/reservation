@@ -7,6 +7,10 @@ import lombok.Getter;
 @Getter
 public class JwtResponse {
 
+    private long userId;
+
+    private Role role;
+
     private String jwtToken;
 
 }
