@@ -69,15 +69,21 @@ public class ClientService {
         throw new ReservationsNotFoundException(userId);
     }
 
-    public ReserveItem createReservation(ReserveItem item) {
+    public ReserveItem createReservation(ReserveItem item, long roomId) {
         ReserveItem newReservation = new ReserveItem(item.getReservationId(), item.getPeriod(), item.getUserId(),
                 item.getDescription());
         reserveItemRepository.save(newReservation);
+        Room newRoom = roomRepository.getRoomById(roomId);
+        newRoom.getReservationList().add(newReservation);
+        roomRepository.save(newRoom);
         return newReservation;
     }
 
-    public void deleteReservation(long reservationId, long userId) {
+    public void deleteReservation(long reservationId, long userId, long roomId) {
         ReserveItem item = reserveItemRepository.getReserveItemByReservationIdAndUserId(reservationId, userId);
+        Room newRoom = roomRepository.getRoomById(roomId);
+        newRoom.getReservationList().remove(item);
+        roomRepository.save(newRoom);
         reserveItemRepository.delete(item);
     }
 
@@ -129,23 +135,4 @@ public class ClientService {
         return new JwtResponse(jwtToken);
     }
 
-    public static byte[] convertImageByte(String string) throws IOException {
-        URL url = new URL(string);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        InputStream is = null;
-        try {
-            is = new BufferedInputStream(url.openStream());
-            byte[] byteChunk = new byte[4096];
-            int n;
-            while ( (n = is.read(byteChunk)) > 0 ) {
-                baos.write(byteChunk, 0, n);
-            }
-            return baos.toByteArray();
-        }
-        catch (IOException e) {e.printStackTrace ();}
-        finally {
-            if (is != null) { is.close(); }
-        }
-        return null;
-    }
 }

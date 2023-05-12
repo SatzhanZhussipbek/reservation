@@ -2,6 +2,7 @@ package jusan.reservation;
 
 import jusan.reservation.model.RoomDTO;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,6 +22,7 @@ public class ReservationApplication {
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(ReservationApplication.class, args);
+
     }
 
 }

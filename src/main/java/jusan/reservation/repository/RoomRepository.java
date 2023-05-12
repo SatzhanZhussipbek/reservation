@@ -23,7 +23,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> getRooms();
 
     @Query(value = "select r from Room r where r.id=?1")
-    Room getRoomById(Long id);
+    Room getRoomById(Long roomId);
 
 
     /*List<Room> findAllById(Sort id);

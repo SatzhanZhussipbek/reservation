@@ -1,0 +1,6 @@
+#FileLock
+#Fri May 12 14:19:34 ALMT 2023
+server=127.0.1.1\:38281
+hostName=jits-3-30.jits.ipa.dc
+method=file
+id=1880f0b3b376a5028668a5c57c84fcd97c3f9d66e3a

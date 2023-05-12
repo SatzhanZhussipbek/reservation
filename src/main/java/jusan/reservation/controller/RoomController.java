@@ -2,11 +2,13 @@ package jusan.reservation.controller;
 
 import jusan.reservation.entity.Client;
 import jusan.reservation.entity.ReserveItem;
+import jusan.reservation.entity.Room;
 import jusan.reservation.exception.ErrorTemplate;
 import jusan.reservation.exception.RoomBookedException;
 import jusan.reservation.model.ClientDAO;
 import jusan.reservation.repository.ClientRepository;
 import jusan.reservation.repository.ReserveItemRepository;
+import jusan.reservation.repository.RoomRepository;
 import jusan.reservation.service.ClientService;
 import jusan.reservation.service.MailService;
 import jusan.reservation.service.RoomService;
@@ -18,6 +20,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 public class RoomController {
     private ClientRepository clientRepository;
@@ -27,15 +32,18 @@ public class RoomController {
 
     private ReserveItemRepository reserveItemRepository;
     private MailService mailService;
+
+    private RoomRepository roomRepository;
     @Autowired
     public RoomController(ClientRepository clientRepository, RoomService roomService,
                           ClientService clientService, ReserveItemRepository reserveItemRepository,
-                          MailService mailService) {
+                          MailService mailService, RoomRepository roomRepository) {
         this.clientRepository = clientRepository;
         this.roomService = roomService;
         this.clientService = clientService;
         this.reserveItemRepository = reserveItemRepository;
         this.mailService = mailService;
+        this.roomRepository = roomRepository;
     }
 
     @GetMapping("/rooms")
@@ -50,7 +58,7 @@ public class RoomController {
 
     @GetMapping("/rooms/filter/id")
     public ResponseEntity<Object> getFilteredRoomsById(@RequestBody ClientDAO clientDAO,
-                                                   Pageable pageable, Authentication authentication) {
+                                                   Authentication authentication) {
         Client searchPerson = clientRepository.findClientById(clientDAO.getId());
         if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
                 !authentication.getCredentials().equals(searchPerson.getPassword()) )  {
@@ -61,7 +69,7 @@ public class RoomController {
 
     @GetMapping("/rooms/filter/floor")
     public ResponseEntity<Object> getFilteredRoomsByFloor(@RequestBody ClientDAO clientDAO,
-                                                   Pageable pageable, Authentication authentication) {
+                                                   Authentication authentication) {
         Client searchPerson = clientRepository.findClientById(clientDAO.getId());
         if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
                 !authentication.getCredentials().equals(searchPerson.getPassword()) )  {
@@ -72,7 +80,7 @@ public class RoomController {
 
     @GetMapping("/rooms/filter/capacity")
     public ResponseEntity<Object> getFilteredRoomsByCapacity(@RequestBody ClientDAO clientDAO,
-                                                          Pageable pageable, Authentication authentication) {
+                                                          Authentication authentication) {
         Client searchPerson = clientRepository.findClientById(clientDAO.getId());
         if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
                 !authentication.getCredentials().equals(searchPerson.getPassword()) )  {
@@ -91,7 +99,7 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getRoom(roomId));
     }
 
-    @GetMapping("/room//images/{roomId}")
+    @GetMapping("/room/images/{roomId}")
     public ResponseEntity<Object> getImagesForRoom(@PathVariable long roomId, @RequestBody ClientDAO clientDAO, Authentication authentication) {
         Client searchPerson = clientRepository.findClientById(clientDAO.getId());
         if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
@@ -108,21 +116,21 @@ public class RoomController {
                 throw new RoomBookedException("The room is already booked during this time period.");
             }
         }
-        clientService.createReservation(reserveItem);
-        mailService.sendMessage(reserveItem.getUserId(), roomId);
+        clientService.createReservation(reserveItem, roomId);
+        //mailService.sendMessage(reserveItem.getUserId(), roomId);
         return ResponseEntity.ok("The reservation has been created.");
 
     }
 
     @DeleteMapping("/reservation/delete")
-    public ResponseEntity<Object> deleteReservation(@RequestParam long reservationId, @RequestParam long userId,
+    public ResponseEntity<Object> deleteReservation(@RequestParam long reservationId, @RequestParam long roomId,
                                                     @RequestBody ClientDAO clientDAO, Authentication authentication) {
         Client person = clientRepository.findClientById(clientDAO.getId());
         if (!authentication.getPrincipal().equals(person.getEmail()) ||
                 !authentication.getCredentials().equals(person.getPassword()) )  {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
         }
-        clientService.deleteReservation(reservationId, userId);
+        clientService.deleteReservation(reservationId, person.getId(), roomId);
         return new ResponseEntity<>(new ErrorTemplate(String.format("Reservation %d deleted", reservationId) ),
                 HttpStatus.OK);
     }

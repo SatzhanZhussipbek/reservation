@@ -33,14 +33,14 @@ public class ClientController {
         this.imageService = imageService;
         this.roomRepository = roomRepository;
     }
-
+    // good
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateData (@RequestBody SignInRequest signInRequest) throws Exception {
         return ResponseEntity.ok(clientService.authenticateUser(signInRequest.getEmail(),
                 signInRequest.getPassword()));
 
     }
-
+    // good
     @PostMapping("/signup")
     public ResponseEntity<?> register(@RequestBody JwtRequest client) {
         return ResponseEntity.ok(clientService.register(client.getName(), client.getSurname(), client.getEmail(), client.getPassword()));
@@ -50,17 +50,17 @@ public class ClientController {
     public ResponseEntity<?> getReservations(@RequestParam long userId) {
         return ResponseEntity.ok(clientService.getReservations(userId));
     }
-
+    // good
     @GetMapping("/image/url/")
     public ResponseEntity<?> getImageURL(@RequestParam String photoName, @RequestParam long roomId) {
         return imageService.getUploadUrl(photoName, roomId);
     }
-
+    // good
     @GetMapping("/image/get/")
     public ResponseEntity<?> getImageByPath(@RequestParam String path) {
         return imageService.getPhoto(path);
     }
-
+    // good
     @PostMapping(path = "/image/upload/", consumes = {"*/*"})
     public ResponseEntity<?> uploadImage(@RequestParam String href, @RequestParam String method,
                                          @RequestBody byte[] image) throws IOException {

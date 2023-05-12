@@ -1,6 +1,7 @@
 package jusan.reservation.service;
 
 import jusan.reservation.entity.PhotoItem;
+import jusan.reservation.entity.Room;
 import jusan.reservation.repository.PhotoRepository;
 import jusan.reservation.repository.RoomRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,9 @@ public class ImageService {
         PhotoItem newPhoto = new PhotoItem(roomId, photoName);
         log.error("---------------->" + resourceUrl);
         photoRepository.save(newPhoto);
+        Room newRoom = roomRepository.getRoomById(roomId);
+        newRoom.getPhotos().add(newPhoto);
+        roomRepository.save(newRoom);
         return response;
     }
 

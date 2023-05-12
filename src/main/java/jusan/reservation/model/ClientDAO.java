@@ -4,8 +4,11 @@ package jusan.reservation.model;
 import jusan.reservation.entity.Client;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClientDAO {
 
     private long id;

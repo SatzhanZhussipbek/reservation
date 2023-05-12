@@ -1,8 +1,6 @@
 package jusan.reservation.service;
 
 import jusan.reservation.entity.Client;
-import jusan.reservation.entity.ReserveItem;
-import jusan.reservation.entity.Room;
 import jusan.reservation.repository.ClientRepository;
 import jusan.reservation.repository.ReserveItemRepository;
 import jusan.reservation.repository.RoomRepository;
@@ -11,7 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.springframework.mail.*;
 
-import java.util.List;
+
 
 @Component
 public class MailService {

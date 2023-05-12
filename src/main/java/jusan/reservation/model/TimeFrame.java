@@ -4,11 +4,9 @@ import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
-
 @Embeddable
 @Data
 @NoArgsConstructor
@@ -16,10 +14,17 @@ import java.util.UUID;
 public class TimeFrame {
 
 
-    private String id = UUID.randomUUID().toString();
+    private String id = generateRandom(4);
 
     private Date startTime;
 
     private Date endTime;
+
+    public static String generateRandom(int num) {
+        boolean useLetters = true;
+        boolean useNumbers = true;
+        String generatedString = RandomStringUtils.random(num, useLetters, useNumbers);
+        return generatedString+".";
+    }
 
 }
