@@ -18,7 +18,6 @@ public class ReserveItem {
     @Column(name = "id")
     private long reservationId;
 
-    @Column(name = "period")
     private TimeFrame period;
 
     @Column(name = "user_id")
