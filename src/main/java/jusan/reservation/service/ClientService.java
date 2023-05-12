@@ -5,6 +5,8 @@ import jusan.reservation.entity.ReserveItem;
 import jusan.reservation.entity.Room;
 import jusan.reservation.exception.ErrorTemplate;
 import jusan.reservation.exception.ReservationsNotFoundException;
+import jusan.reservation.exception.UserIdNotFoundException;
+import jusan.reservation.model.ClientDTO;
 import jusan.reservation.model.JwtResponse;
 import jusan.reservation.model.Role;
 import jusan.reservation.model.RoomDTO;
@@ -14,7 +16,6 @@ import jusan.reservation.repository.RoomRepository;
 import jusan.reservation.security.ClientDetails;
 import jusan.reservation.security.JwtService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
-import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -87,16 +83,23 @@ public class ClientService {
         reserveItemRepository.delete(item);
     }
 
-    public Room createRoom(RoomDTO roomDTO) throws IOException {
+    public Room createRoom(RoomDTO roomDTO) {
         Room newRoom = new Room(roomDTO.getId(), roomDTO.getDescription(), roomDTO.getPhotos(), roomDTO.getType(),
                 roomDTO.getCapacity(), roomDTO.getFloor(), roomDTO.getReservationList());
         roomRepository.save(newRoom);
         return newRoom;
     }
 
-    public String deleteRoom(long userId, Room room) {
+    public String deleteRoom(Room room) {
         roomRepository.delete(room);
         return String.format("The room "+room.getId()+" has been deleted");
+    }
+
+    public List<ClientDTO> getClients(long userId) {
+        if (clientRepository.findClientById(userId) != null) {
+            return clientRepository.findAllBy();
+        }
+        throw new UserIdNotFoundException(String.valueOf(userId));
     }
 
     public ResponseEntity<Object> register(String name, String surname, String email, String password) {

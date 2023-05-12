@@ -1,10 +1,7 @@
 package jusan.reservation.controller;
 import jusan.reservation.entity.Client;
 import jusan.reservation.entity.Room;
-import jusan.reservation.model.JwtRequest;
-import jusan.reservation.model.Role;
-import jusan.reservation.model.RoomDTO;
-import jusan.reservation.model.SignInRequest;
+import jusan.reservation.model.*;
 import jusan.reservation.repository.ClientRepository;
 import jusan.reservation.repository.RoomRepository;
 import jusan.reservation.service.ClientService;
@@ -17,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -46,10 +44,21 @@ public class ClientController {
         return ResponseEntity.ok(clientService.register(client.getName(), client.getSurname(), client.getEmail(), client.getPassword()));
     }
 
+    @GetMapping("/clients")
+    public List<ClientDTO> getAllClients(@RequestParam long userId, Authentication authentication) {
+        Client person = clientRepository.findClientById(userId);
+        if ( !authentication.getPrincipal().equals(person.getEmail()) ||
+                !authentication.getCredentials().equals(person.getPassword()) )  {
+            throw new AccessDeniedException("Access denied. You entered the wrong id.");
+        }
+        return clientService.getClients(userId);
+    }
+
     @GetMapping("/reservations")
     public ResponseEntity<?> getReservations(@RequestParam long userId) {
         return ResponseEntity.ok(clientService.getReservations(userId));
     }
+
     // good
     @GetMapping("/image/url/")
     public ResponseEntity<?> getImageURL(@RequestParam String photoName, @RequestParam long roomId) {
@@ -93,7 +102,7 @@ public class ClientController {
             throw new AccessDeniedException("Access denied. Only admins can erase rooms.");
         }
         Room delRoom = roomRepository.getRoomById(roomId);
-        return ResponseEntity.ok(clientService.deleteRoom(userId, delRoom));
+        return ResponseEntity.ok(clientService.deleteRoom(delRoom));
     }
 
 

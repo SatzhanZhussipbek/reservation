@@ -1,13 +1,16 @@
 package jusan.reservation.repository;
 
+import jusan.reservation.model.ClientDTO;
 import jusan.reservation.model.Role;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import jusan.reservation.entity.Client;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface ClientRepository extends CrudRepository<Client, Long> {
+public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query(value = "select c from Client c where c.id = ?1")
     Client findClientById(long userId);
 
@@ -16,4 +19,6 @@ public interface ClientRepository extends CrudRepository<Client, Long> {
 
     @Query(value = "select c from Client c where c.role = ?1")
     Client findClientByRole(Role role);
+
+    List<ClientDTO> findAllBy();
 }

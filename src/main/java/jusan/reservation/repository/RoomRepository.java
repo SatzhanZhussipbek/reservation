@@ -26,10 +26,4 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     Room getRoomById(Long roomId);
 
 
-    /*List<Room> findAllById(Sort id);
-
-
-    List<Room> findAllByFloor(Sort floor);
-
-    List<Room> findAllByCapacity(Sort capacity);*/
 }

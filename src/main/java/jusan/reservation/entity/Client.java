@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 @Data
 @AllArgsConstructor
@@ -20,6 +21,7 @@ public class Client {
     private long id;
 
     @Column(name="name")
+    @Value("target")
     private String name;
 
     @Column(name="surname")
@@ -35,8 +37,6 @@ public class Client {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
-
     public Client(String name, String surname, String email, String password,
                   Role role) {
         this.name = name;
@@ -45,4 +45,5 @@ public class Client {
         this.password = password;
         this.role = role;
     }
+
 }
