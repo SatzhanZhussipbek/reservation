@@ -77,9 +77,9 @@ public class ClientController {
         return imageService.uploadPhoto(href, method, image);
     }
     @PostMapping("/rooms/add")
-    public ResponseEntity<?> createRoom(@RequestBody RoomDTO roomDTO,
+    public ResponseEntity<?> createRoom(@RequestBody RoomDTO roomDTO, @RequestParam long userId,
                                         Authentication authentication) throws IOException {
-        Client person = clientRepository.findClientById(roomDTO.getReservationList().get(0).getUserId());
+        Client person = clientRepository.findClientById(userId);
         if ( !authentication.getPrincipal().equals(person.getEmail()) ||
                 !authentication.getCredentials().equals(person.getPassword()) )  {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
