@@ -22,6 +22,5 @@ Number 2 -> reservation operations
 Number 3 -> image related operations
 
 Number 4 -> user related operations
-  
 ``` 
 <h3>Yandex disk is used for storage of images, and the database only contains its location within the disk</h3>
