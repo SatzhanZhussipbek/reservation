@@ -1,9 +1,7 @@
 package jusan.reservation.model;
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jusan.reservation.entity.ReserveItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,8 +15,6 @@ import java.util.Random;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TimeFrame {
-
-    private long bookingId;
 
     private long clientId;
 
