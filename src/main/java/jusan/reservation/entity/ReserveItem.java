@@ -15,7 +15,7 @@ public class ReserveItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reservation_id")
+    @Column(name = "id")
     private long reservationId;
 
     @Column(name = "period")

@@ -112,12 +112,15 @@ public class RoomController {
     @PostMapping("/reservation/add")
     public ResponseEntity<Object> addReservation(@RequestParam long roomId, @RequestBody ReserveItem reserveItem) {
         if (reserveItemRepository.existsById(reserveItem.getReservationId())) {
-            if (reserveItemRepository.getReserveItemByReservationIdAndUserId(reserveItem.getReservationId(), reserveItem.getUserId()).getPeriod()==reserveItem.getPeriod()) {
+            if (reserveItemRepository.getReserveItemByReservationIdAndUserId
+                    ( reserveItem.getReservationId(), reserveItem.getUserId() ).getPeriod().getStartTime().before( reserveItem.getPeriod().getStartTime() )
+            || reserveItemRepository.getReserveItemByReservationIdAndUserId
+                    ( reserveItem.getReservationId(), reserveItem.getUserId() ).getPeriod().getEndTime().after(reserveItem.getPeriod().getEndTime())) {
                 throw new RoomBookedException("The room is already booked during this time period.");
             }
         }
         clientService.createReservation(reserveItem, roomId);
-        //mailService.sendMessage(reserveItem.getUserId(), roomId);
+        mailService.sendMessage(reserveItem.getUserId(), roomId);
         return ResponseEntity.ok("The reservation has been created.");
 
     }

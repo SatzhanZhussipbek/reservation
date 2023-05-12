@@ -1,30 +1,31 @@
 package jusan.reservation.model;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Random;
+
 @Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TimeFrame {
 
+    private long bookingId;
 
-    private String id = generateRandom(4);
+    private long clientId;
+
+    private long roomId;
 
     private Date startTime;
 
     private Date endTime;
-
-    public static String generateRandom(int num) {
-        boolean useLetters = true;
-        boolean useNumbers = true;
-        String generatedString = RandomStringUtils.random(num, useLetters, useNumbers);
-        return generatedString+".";
-    }
 
 }

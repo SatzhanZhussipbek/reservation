@@ -31,12 +31,10 @@ CREATE TABLE if not exists Photo_items
 
 CREATE TABLE if not exists Reserve_item
 (
-    reservation_id IDENTITY,
+    id IDENTITY,
     period Object,
     user_id LONG,
-    room_id LONG,
     description NVARCHAR(256),
-    PRIMARY KEY(reservation_id),
-    FOREIGN KEY (user_id) REFERENCES Clients(id),
-    FOREIGN KEY (room_id) REFERENCES Rooms(id)
+    PRIMARY KEY(id),
+    FOREIGN KEY (user_id) REFERENCES Clients(id)
 );
