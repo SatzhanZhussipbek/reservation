@@ -83,7 +83,7 @@ public class ClientController {
 
     @DeleteMapping("/rooms/delete")
     public ResponseEntity<?> deleteRoom(@RequestParam long userId,
-                                        @RequestBody Room room, Authentication authentication) {
+                                        @RequestParam long roomId, Authentication authentication) {
         Client person1 = clientRepository.findClientById(userId);
         if ( !authentication.getPrincipal().equals(person1.getEmail()) ||
                 !authentication.getCredentials().equals(person1.getPassword()) )  {
@@ -92,7 +92,8 @@ public class ClientController {
         if (person1.getRole().equals(Role.USER)) {
             throw new AccessDeniedException("Access denied. Only admins can erase rooms.");
         }
-        return ResponseEntity.ok(clientService.deleteRoom(userId, room));
+        Room delRoom = roomRepository.getRoomById(roomId);
+        return ResponseEntity.ok(clientService.deleteRoom(userId, delRoom));
     }
 
 

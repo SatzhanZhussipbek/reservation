@@ -2,10 +2,8 @@ package jusan.reservation.controller;
 
 import jusan.reservation.entity.Client;
 import jusan.reservation.entity.ReserveItem;
-import jusan.reservation.entity.Room;
 import jusan.reservation.exception.ErrorTemplate;
 import jusan.reservation.exception.RoomBookedException;
-import jusan.reservation.model.ClientDAO;
 import jusan.reservation.repository.ClientRepository;
 import jusan.reservation.repository.ReserveItemRepository;
 import jusan.reservation.repository.RoomRepository;
@@ -13,15 +11,11 @@ import jusan.reservation.service.ClientService;
 import jusan.reservation.service.MailService;
 import jusan.reservation.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 public class RoomController {
@@ -47,8 +41,8 @@ public class RoomController {
     }
 
     @GetMapping("/rooms")
-    public ResponseEntity<Object> getRooms(@RequestBody ClientDAO clientDAO, Authentication authentication) {
-        Client searchPerson = clientRepository.findClientById(clientDAO.getId());
+    public ResponseEntity<Object> getRooms(@RequestParam long userId, Authentication authentication) {
+        Client searchPerson = clientRepository.findClientById(userId);
         if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
                 !authentication.getCredentials().equals(searchPerson.getPassword()) )  {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
@@ -57,9 +51,9 @@ public class RoomController {
     }
 
     @GetMapping("/rooms/filter/id")
-    public ResponseEntity<Object> getFilteredRoomsById(@RequestBody ClientDAO clientDAO,
+    public ResponseEntity<Object> getFilteredRoomsById(@RequestParam long userId,
                                                    Authentication authentication) {
-        Client searchPerson = clientRepository.findClientById(clientDAO.getId());
+        Client searchPerson = clientRepository.findClientById(userId);
         if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
                 !authentication.getCredentials().equals(searchPerson.getPassword()) )  {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
@@ -68,9 +62,9 @@ public class RoomController {
     }
 
     @GetMapping("/rooms/filter/floor")
-    public ResponseEntity<Object> getFilteredRoomsByFloor(@RequestBody ClientDAO clientDAO,
+    public ResponseEntity<Object> getFilteredRoomsByFloor(@RequestParam long userId,
                                                    Authentication authentication) {
-        Client searchPerson = clientRepository.findClientById(clientDAO.getId());
+        Client searchPerson = clientRepository.findClientById(userId);
         if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
                 !authentication.getCredentials().equals(searchPerson.getPassword()) )  {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
@@ -79,9 +73,9 @@ public class RoomController {
     }
 
     @GetMapping("/rooms/filter/capacity")
-    public ResponseEntity<Object> getFilteredRoomsByCapacity(@RequestBody ClientDAO clientDAO,
+    public ResponseEntity<Object> getFilteredRoomsByCapacity(@RequestParam long userId,
                                                           Authentication authentication) {
-        Client searchPerson = clientRepository.findClientById(clientDAO.getId());
+        Client searchPerson = clientRepository.findClientById(userId);
         if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
                 !authentication.getCredentials().equals(searchPerson.getPassword()) )  {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
@@ -90,8 +84,8 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomId}")
-    public ResponseEntity<Object> getRoom(@PathVariable long roomId, @RequestBody ClientDAO clientDAO, Authentication authentication) {
-        Client searchPerson = clientRepository.findClientById(clientDAO.getId());
+    public ResponseEntity<Object> getRoom(@PathVariable long roomId, @RequestParam long userId, Authentication authentication) {
+        Client searchPerson = clientRepository.findClientById(userId);
         if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
                 !authentication.getCredentials().equals(searchPerson.getPassword()) )  {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
@@ -100,8 +94,8 @@ public class RoomController {
     }
 
     @GetMapping("/room/images/{roomId}")
-    public ResponseEntity<Object> getImagesForRoom(@PathVariable long roomId, @RequestBody ClientDAO clientDAO, Authentication authentication) {
-        Client searchPerson = clientRepository.findClientById(clientDAO.getId());
+    public ResponseEntity<Object> getImagesForRoom(@PathVariable long roomId, @RequestParam long userId, Authentication authentication) {
+        Client searchPerson = clientRepository.findClientById(userId);
         if (!authentication.getPrincipal().equals(searchPerson.getEmail()) ||
                 !authentication.getCredentials().equals(searchPerson.getPassword()) )  {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
@@ -127,8 +121,8 @@ public class RoomController {
 
     @DeleteMapping("/reservation/delete")
     public ResponseEntity<Object> deleteReservation(@RequestParam long reservationId, @RequestParam long roomId,
-                                                    @RequestBody ClientDAO clientDAO, Authentication authentication) {
-        Client person = clientRepository.findClientById(clientDAO.getId());
+                                                    @RequestParam long userId, Authentication authentication) {
+        Client person = clientRepository.findClientById(userId);
         if (!authentication.getPrincipal().equals(person.getEmail()) ||
                 !authentication.getCredentials().equals(person.getPassword()) )  {
             throw new AccessDeniedException("Access denied. You entered the wrong id.");
