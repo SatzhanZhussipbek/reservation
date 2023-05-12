@@ -26,4 +26,7 @@ public class ReserveItem {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "room_id")
+    private long roomId;
+
 }

@@ -2,6 +2,7 @@ package jusan.reservation.controller;
 
 import jusan.reservation.entity.Client;
 import jusan.reservation.entity.ReserveItem;
+import jusan.reservation.entity.Room;
 import jusan.reservation.exception.ErrorTemplate;
 import jusan.reservation.exception.RoomBookedException;
 import jusan.reservation.repository.ClientRepository;
@@ -25,7 +26,7 @@ public class RoomController {
     private ClientService clientService;
 
     private ReserveItemRepository reserveItemRepository;
-    private MailService mailService;
+
 
     private RoomRepository roomRepository;
     @Autowired
@@ -36,7 +37,6 @@ public class RoomController {
         this.roomService = roomService;
         this.clientService = clientService;
         this.reserveItemRepository = reserveItemRepository;
-        this.mailService = mailService;
         this.roomRepository = roomRepository;
     }
 
@@ -105,17 +105,29 @@ public class RoomController {
 
     @PostMapping("/reservation/add")
     public ResponseEntity<Object> addReservation(@RequestParam long roomId, @RequestBody ReserveItem reserveItem) {
-        if (reserveItemRepository.existsById(reserveItem.getReservationId())) {
-            if (reserveItemRepository.getReserveItemByReservationIdAndUserId
-                    ( reserveItem.getReservationId(), reserveItem.getUserId() ).getPeriod().getStartTime().before( reserveItem.getPeriod().getStartTime() )
-            || reserveItemRepository.getReserveItemByReservationIdAndUserId
-                    ( reserveItem.getReservationId(), reserveItem.getUserId() ).getPeriod().getEndTime().after(reserveItem.getPeriod().getEndTime())) {
-                throw new RoomBookedException("The room is already booked during this time period.");
+        if (reserveItemRepository.findById(reserveItem.getReservationId()).isPresent()) {
+            for (ReserveItem r: reserveItemRepository.findAll()) {
+                if (r.getRoomId()==reserveItem.getRoomId()) {
+                    if ( r.getPeriod().getStartTime().compareTo(reserveItem.getPeriod().getStartTime()) == 0) {
+                        if (r.getPeriod().getEndTime().compareTo(reserveItem.getPeriod().getEndTime()) == 0) {
+                            throw new RoomBookedException("The room is already booked during this time period.");
+                        }
+                        throw new RoomBookedException("The room is already booked during this time period.");
+                    }
+                    if (r.getPeriod().getStartTime().compareTo(reserveItem.getPeriod().getEndTime()) < 0 &&
+                    r.getPeriod().getEndTime().compareTo(reserveItem.getPeriod().getEndTime()) > 0) {
+                        throw new RoomBookedException("The room is already booked during this time period.");
+                    }
+                    if (r.getPeriod().getEndTime().compareTo(reserveItem.getPeriod().getStartTime()) > 0 &&
+                    r.getPeriod().getEndTime().compareTo(reserveItem.getPeriod().getEndTime()) < 0) {
+                        throw new RoomBookedException("The room is already booked during this time period.");
+                    }
+
+                }
+
             }
         }
-        clientService.createReservation(reserveItem, roomId);
-        mailService.sendMessage(reserveItem.getUserId(), roomId);
-        return ResponseEntity.ok("The reservation has been created.");
+        return ResponseEntity.ok(clientService.createReservation(reserveItem, roomId));
 
     }
 

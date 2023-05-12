@@ -45,16 +45,20 @@ public class ClientService {
 
     private RoomRepository roomRepository;
 
+    private MailService mailService;
+
     @Autowired
     public ClientService(ClientRepository clientRepository, PasswordEncoder passwordEncoder,
                        JwtService jwtService, AuthenticationManager authenticationManager,
-                         ReserveItemRepository reserveItemRepository, RoomRepository roomRepository) {
+                         ReserveItemRepository reserveItemRepository, RoomRepository roomRepository,
+                         MailService mailService) {
         this.clientRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.reserveItemRepository = reserveItemRepository;
         this.roomRepository = roomRepository;
+        this.mailService = mailService;
     }
 
     public List<ReserveItem> getReservations(long userId) {
@@ -67,11 +71,12 @@ public class ClientService {
 
     public ReserveItem createReservation(ReserveItem item, long roomId) {
         ReserveItem newReservation = new ReserveItem(item.getReservationId(), item.getPeriod(), item.getUserId(),
-                item.getDescription());
+                item.getDescription(), roomId);
         reserveItemRepository.save(newReservation);
         Room newRoom = roomRepository.getRoomById(roomId);
         newRoom.getReservationList().add(newReservation);
         roomRepository.save(newRoom);
+        mailService.sendMessage(newReservation.getUserId(), roomId);
         return newReservation;
     }
 

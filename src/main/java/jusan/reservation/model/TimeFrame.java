@@ -18,7 +18,7 @@ public class TimeFrame {
 
     private long clientId;
 
-    private long roomId;
+    private long roomNum;
 
     private Date startTime;
 

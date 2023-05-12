@@ -35,6 +35,7 @@ CREATE TABLE if not exists Reserve_item
     period Object,
     user_id LONG,
     description NVARCHAR(256),
+    room_id LONG,
     PRIMARY KEY(id),
     FOREIGN KEY (user_id) REFERENCES Clients(id)
 );
