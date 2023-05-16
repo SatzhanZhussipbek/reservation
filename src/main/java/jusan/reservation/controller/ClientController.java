@@ -44,6 +44,11 @@ public class ClientController {
         return ResponseEntity.ok(clientService.register(client.getName(), client.getSurname(), client.getEmail(), client.getPassword()));
     }
 
+    @PostMapping("/make/admin")
+    public ResponseEntity<?> makeAdmin(@RequestParam long userId) {
+        return ResponseEntity.ok(clientService.makeAdmin(userId));
+    }
+
     @GetMapping("/clients")
     public List<ClientDTO> getAllClients(@RequestParam long userId, Authentication authentication) {
         Client person = clientRepository.findClientById(userId);

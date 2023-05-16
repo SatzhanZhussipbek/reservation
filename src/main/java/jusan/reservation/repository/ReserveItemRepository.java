@@ -13,5 +13,6 @@ public interface ReserveItemRepository extends CrudRepository<ReserveItem, Long>
     @Query(value = "select r from ReserveItem r where r.reservationId = ?1 and r.userId = ?2")
     ReserveItem getReserveItemByReservationIdAndUserId(long reservationId, long userId);
 
-    ReserveItem getReserveItemByRoomId(long roomId);
+    @Query(value = "select r from ReserveItem r where r.roomId = ?1")
+    List<ReserveItem> getReserveItemsByRoomId(long roomId);
 }

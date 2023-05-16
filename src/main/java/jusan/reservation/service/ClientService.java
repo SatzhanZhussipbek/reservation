@@ -88,6 +88,15 @@ public class ClientService {
         reserveItemRepository.delete(item);
     }
 
+    public Client makeAdmin(long userId) {
+        Client user = clientRepository.findClientById(userId);
+        if (user != null && user.getRole().equals(Role.USER)) {
+            user.setRole(Role.ADMIN);
+            clientRepository.save(user);
+        }
+        return user;
+    }
+
     public Room createRoom(RoomDTO roomDTO) {
         Room newRoom = new Room(roomDTO.getId(), roomDTO.getDescription(), roomDTO.getPhotos(), roomDTO.getType(),
                 roomDTO.getCapacity(), roomDTO.getFloor(), roomDTO.getReservationList());
