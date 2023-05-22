@@ -72,10 +72,10 @@ public class ClientService {
     public ReserveItem createReservation(ReserveItem item, long roomId) {
         ReserveItem newReservation = new ReserveItem(item.getReservationId(), item.getPeriod(), item.getUserId(),
                 item.getDescription(), roomId);
-        reserveItemRepository.save(newReservation);
         Room newRoom = roomRepository.getRoomById(roomId);
         newRoom.getReservationList().add(newReservation);
         roomRepository.save(newRoom);
+        reserveItemRepository.save(newReservation);
         mailService.sendMessage(newReservation.getUserId(), roomId);
         return newReservation;
     }

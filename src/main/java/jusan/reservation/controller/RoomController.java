@@ -125,7 +125,13 @@ public class RoomController {
     //          2.......3
     //            2.5......3.5
     @PostMapping("/reservation/add")
-    public ResponseEntity<Object> addReservation(@RequestParam long roomId, @RequestBody ReserveItem reserveItem) {
+    public ResponseEntity<Object> addReservation(@RequestParam long roomId, @RequestBody ReserveItem reserveItem, Authentication
+                                                 authentication) {
+        Client person = clientRepository.findClientById(reserveItem.getUserId());
+        if (!authentication.getPrincipal().equals(person.getEmail()) ||
+                !authentication.getCredentials().equals(person.getPassword()) )  {
+            throw new AccessDeniedException("Access denied. You entered the wrong id.");
+        }
         for (ReserveItem r : reserveItemRepository.getReserveItemsByRoomId(roomId)) {
                 if ( reserveItem.getPeriod().getStartTime().after(r.getPeriod().getStartTime()) &&
                         reserveItem.getPeriod().getStartTime().before(r.getPeriod().getEndTime()) &&
