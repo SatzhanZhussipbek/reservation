@@ -7,4 +7,6 @@ public interface ClientDTO {
     String getName();
 
     String getSurname();
+
+    Role getRole();
 }
