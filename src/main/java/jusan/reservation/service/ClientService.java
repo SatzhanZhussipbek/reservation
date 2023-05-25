@@ -75,7 +75,7 @@ public class ClientService {
         Room newRoom = roomRepository.getRoomById(roomId);
         newRoom.getReservationList().add(newReservation);
         reserveItemRepository.save(newReservation);
-        mailService.sendMessage(newReservation.getUserId(), roomId);
+        //mailService.sendMessage(newReservation.getUserId(), roomId);
         return newReservation;
     }
 
