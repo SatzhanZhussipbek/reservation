@@ -35,11 +35,11 @@ public class ImageService {
         HttpEntity request = new HttpEntity(headers);
         ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.GET, request, String.class);
         PhotoItem newPhoto = new PhotoItem(roomId, photoName);
-        log.error("---------------->" + resourceUrl);
+        //log.error("---------------->" + resourceUrl);
         photoRepository.save(newPhoto);
         Room newRoom = roomRepository.getRoomById(roomId);
         newRoom.getPhotos().add(newPhoto);
-        roomRepository.save(newRoom);
+        //roomRepository.save(newRoom);
         return response;
     }
 

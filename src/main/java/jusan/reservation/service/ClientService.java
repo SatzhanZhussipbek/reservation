@@ -99,6 +99,8 @@ public class ClientService {
     public Room createRoom(RoomDTO roomDTO) {
         Room newRoom = new Room(roomDTO.getId(), roomDTO.getDescription(), roomDTO.getPhotos(), roomDTO.getType(),
                 roomDTO.getCapacity(), roomDTO.getFloor(), roomDTO.getReservationList());
+        roomDTO.getReservationList().remove(0);
+        roomDTO.getPhotos().remove(0);
         roomRepository.save(newRoom);
         return newRoom;
     }
