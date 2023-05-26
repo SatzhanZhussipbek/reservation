@@ -124,10 +124,10 @@ public class ClientService {
         Client user = new Client();
         user.setName(name); user.setSurname(surname);
         user.setEmail(email); user.setPassword(passwordEncoder.encode(password));
-        if (clientRepository.findClientByRole(Role.ADMIN) == null) {
+        if (clientRepository.findClientsByRole(Role.ADMIN).get(0) == null) {
             user.setRole(Role.ADMIN);
         }
-        if (clientRepository.findClientByRole(Role.ADMIN) != null) {
+        if (clientRepository.findClientsByRole(Role.ADMIN).get(0) != null) {
             user.setRole(Role.USER);
         }
         clientRepository.save(user);

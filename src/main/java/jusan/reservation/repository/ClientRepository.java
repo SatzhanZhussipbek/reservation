@@ -18,7 +18,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     Client findClientByEmail(String email);
 
     @Query(value = "select c from Client c where c.role = ?1")
-    Client findClientByRole(Role role);
+    List<Client> findClientsByRole(Role role);
 
     List<ClientDTO> findAllBy();
 }
